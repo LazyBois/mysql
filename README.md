@@ -1,0 +1,2 @@
+# mysql
+about mysql operations
