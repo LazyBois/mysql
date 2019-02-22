@@ -1,0 +1,63 @@
+一、部署工具使用说明
+主要功能：
+1、自动安装master数据库，自动安装slave数据库(一台slave服务器可安装3个slave数据)。
+2、自动配置mater，slave数据库，支持三个master 对应一个slave 服务器。
+3、支持并发安装部署程序。
+使用说明：
+1、将MS_MYSQL_INSTALL64 拷贝到manger服务器上。
+2、cd MS_MYSQL_INSTALL64 目录, sh install.sh -h。
+ 
+3、安装database1 -- backup1(第一个salve)以楚汉传奇为例
+   sh install.sh  -m database1 -s backup1 -n 1 -p'数据库密码'  -t c
+
+   安装database2 --- backup1 (第二个slave)
+   sh install.sh  -m database2 -s backup1 -n 2 -p'数据库密码'  -t c
+
+   安装database3 --- backup1 (第三个slave)
+   sh install.sh  -m database3  -s backup1 -n 3 -p'数据库密码'  -t c
+   
+   注：安装多实例之所以没有采用sh install.sh  -m database1，database2，database3 -s backup1 
+   这样的方式部署多实例,主要是考虑，有可能当前只有database1。database2或database3机器没有到位的情况。
+
+4、如果只配置主从 需加 -f 参数
+   sh install.sh  -m database2 -s backup1 -n 2 -p'数据库密码' -f 
+5、如果只部署master数据库 
+sh install.sh  -m database1  -p'数据库密码' 
+
+
+注：
+1、确保manager与其他机器(database backup)ssh rcp key互信。 ssh 端口为30022
+2、在安装前请确认是否有数据库存在，如果在master 上ps aux|grep mysql 有进程存在，会终止安装。
+在slave上安装第一个slave时 如果lsof –i:3306 有进程占用3306端口，会终止安装。安装其他slave时
+依次类推。
+
+
+
+二、手工检验部署是否成功的方法。
+
+1、检验数据库是否部署成功。
+
+    主数据库
+    ps aux|grep mysql 查看是否有数据库进程存在。
+
+    从数据库
+    第一个slave数据库
+    ps aux|grep mysql1  查看是否有/usr/local/mysql1 这个数据库占用的端口是3306
+
+    第二个slave 数据库
+
+    ps aux|grep mysql2  查看是否有/usr/local/mysql2 这个数据库占用的端口是3307
+
+    第三个slave 数据库
+
+    ps aux|grep mysql3 查看是否有/usr/local/mysql3 这个数据库占用的端口是3308
+
+
+2、检验数据库主从是否配置成功。
+
+mysql> show slave status\G  查看Master_Host:对应的ip是否是
+主数据库的ip，查看Slave_IO_Running、Slave_SQL_Running是否为yes。
+
+
+
+

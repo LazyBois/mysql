@@ -1,0 +1,27 @@
+# Example MySQL config file for very large systems.
+[client]
+port               = 3306
+socket             = /tmp/mysql3306.sock
+default-character-set =utf8mb4
+
+[mysql]
+prompt="(\u@\h:)[\d]> "
+
+[mysqldump]
+quick
+max_allowed_packet = 32M
+
+[isamchk]
+key_buffer = 128M
+sort_buffer_size = 256M
+read_buffer = 2M
+write_buffer = 2M
+
+[myisamchk]
+key_buffer = 128M
+sort_buffer_size = 256M
+read_buffer = 2M
+write_buffer = 2M
+
+[mysqlhotcopy]
+interactive-timeout
